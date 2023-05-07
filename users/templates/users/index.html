@@ -1,0 +1,36 @@
+{% extends 'users/base.html' %}
+{% block body %}
+{% load static %}
+        <div class="" style="display:flex; justify-content:center;">
+            <h2 style="font-size:36px; font-weight:bold;margin-bottom:1px;top:16px;position:relative;color:grey;">My Posts</h2>
+        </div>
+        <div style="display:grid;grid-template-columns: repeat(1, minmax(0, 1fr));margin-left:240px;margin-right:240px;padding:40px;">
+            {% for post in posts %}
+            <!-- card starts here -->
+                <a href="">
+                    <div style="border-radius:4px;overflow:hidden;top: -96px;position: relative;">
+                    <div class="user-container mx-5 my-5" style="display:flex;bottom: -21px;position: relative;">
+                        <img style="height:40px; width:40px;" src="{{profile.photo.url}}" alt="">
+                        <div class="mx-2 my-2" style="font-weight:bold;"><span style="color:indigo">{{post.user}}</span></div>
+                    </div>
+                        <img src="{{post.image.url}}" alt=""style="width: 451px;height: 435px;border-radius:16px;" class="shadow-lg">
+                    </div>
+                    <div class="px-10 py-4">
+                        <div class="icon-container">
+                            <img style="width:26px;height:28px;left: 20px;position: relative;bottom: 111px;" src="{%static 'users/images/like.png'%}" alt="">
+                            <img style="width:20px;height:20px;left: 24px;position: relative;bottom: 111px;" src="{%static 'users/images/comment.png'%}" alt="">
+                            <img style="width:20px;height:20px;left: 30px;position: relative;bottom: 111px;" src="{%static 'users/images/share.png'%}" alt="">
+                        </div>
+                    </div>
+                    <div class="px-6 py-4">
+                        <div style="font-weight:bold;top: -154px;position: relative;margin-bottom:8px;font-size:1.25rem;20px;line-height:1.75rem;color:black;">{{post.title}}</div>
+                        <p style="top: -155px;position: relative;color: rgb(55 65 81); font-size:16px;line-height:24px">{{post.caption}}</p>
+                    </div>
+                </a>
+            <!-- card ends here -->
+            {% endfor %}
+        </div>
+{% endblock body %}
+
+
+

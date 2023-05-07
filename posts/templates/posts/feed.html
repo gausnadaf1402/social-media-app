@@ -1,0 +1,88 @@
+{% extends 'users/base.html' %}
+{% load mathfilters %}
+{% block head %}{% endblock head %}
+{% block body %}
+{% load static %}
+        <div class="" style="display:flex; justify-content:center;">
+            <h2 style="font-size:36px; font-weight:bold;margin-bottom:1px;top:16px;position:relative;color:grey;">My Posts</h2>
+        </div>
+        <div style="display:grid;grid-template-columns: repeat(1, minmax(0, 1fr));margin-left:240px;margin-right:240px;padding:40px;">
+            {% for post in posts %}
+            <!-- card starts here -->
+                <a href="" style="bottom: -2px;position: relative;">
+                    <div style="border-radius:4px;overflow:hidden;top: -96px;position: relative;">
+                    <div class="user-container mx-5 my-5" style="display:flex;bottom: -21px;position: relative;">
+                        <img style="height:40px; width:48px;" src="{{ post.profile.photo.url}}" alt="">
+                        <div class="mx-2 my-2" style="font-weight:bold;"><span style="color:indigo">{{post.user}}</span></div>
+                    </div>
+                        <img src="{{post.image.url}}" alt=""style="width: 451px;height: 435px;border-radius:16px;" class="shadow-lg">
+                    </div>
+                    <div class="px-10 py-4">
+                        <div class="icon-container">
+                            <a id="{{post.id}}" class="btn-like">
+                                {%if logged_user in post.liked_by.all%}
+                                <img style="width:26px;height:28px;left: 20px;position: relative;bottom: 111px;" src="{%static 'users/images/red_like.png'%}" alt="">
+                                {%else%}
+                                <img style="width:26px;height:28px;left: 20px;position: relative;bottom: 111px;" src="{%static 'users/images/white_like.png'%}" alt="">
+                                {%endif%}
+                            </a>                            
+                            <img style="width:20px;height:20px;left: 20px;position: relative;bottom: 111px;" src="{%static 'users/images/comment.png'%}" alt="">
+                            <img style="width:20px;height:20px;left: 20px;position: relative;bottom: 111px;" src="{%static 'users/images/share.png'%}" alt="">
+                        </div>
+                    </div>
+                    <div style="top: -90px;position: relative;">
+                        {%if post.liked_by.count < 1 %}
+                        {%elif post.liked_by == 1 %}
+                        {{ post.liked_by.first }}Likes This
+                        {%elif post.liked_by.count > 1 %}
+                        {{ post.liked_by.first }} & {{post.liked_by.count|sub:1}} other Likes This
+                        {%endif%}
+                    </div>
+                    <div class="px-6 py-4">
+                        <div style="font-weight:bold;top: -166px;position: relative;margin-bottom:8px;font-size:20px;line-height:1.75rem;color:black;">{{post.title}}</div>
+                        <p style="top: -151px;position: relative;color: rgb(55 65 81); font-size:16px;line-height:24px">{{post.caption}}</p>
+                    </div>
+                    <div class="px-5 py-5" style="top:-238px;position: relative;left:-46px;">
+                        {% for comment in post.comments.all %}
+                        <b>{{comment.posted_by}}</b>:{{comment.body}}
+                            <br>
+                        {% endfor %}
+                    </div>
+                    <div class="px-5" style="top:-312px;position: relative;left: -78px;">
+                        <form method="post" class="shadow" style="background-color: rgb(255 255 255);margin:40px;width:80%;border-radius:10px;padding-left:32px;padding-right:32px;padding-top:24px;padding-bottom:32px;margin-bottom: 16px;">{%csrf_token%}
+                            <div>
+                                <label style="display:block;color:rgb(55 65 81);font-weight:bold;margin-bottom:8px;"><b>Add Comment</b></label>
+                            </div>
+                            <div class="shadow px-3 py-2 " style="appearance:none;border-width:1px;border-radius:10px;margin-right:-17px;color:rgb(55 65 81);">
+                                {{comment_form.body}}
+                            </div>
+                            <div>
+                                <input type="hidden" name="post_id" id="post_id" value="{{post.id}}">
+                                <input type="hidden" name="posted_by" id="posted_by" value="{{logged_user}}">
+                            </div>
+                            
+                                <button class="px-5 py-2" style="background-color: rgb(34 197 94);color: rgb(255 255 255);border-radius:10px;" type="submit">Add</button>
+                        
+                        </form>
+                    </div>
+                </a>
+            <!-- card ends here -->
+            {% endfor %}
+        </div>
+<script type="text/javascript">
+//console.log('this is working')
+window.CSRF_TOKEN="{{csrf_token}}"
+$(document).on('click','.btn-like',function(){
+    var post_id=this.id
+    $.ajax({
+        method:'POST',
+        url:'/posts/like',
+        data:{post_id:post_id,csrfmiddlewaretoken:window.CSRF_TOKEN}
+    })
+    //window.location.href='http://127.0.0.1:8000/posts/feed';
+});
+</script>
+{% endblock body %}
+
+
+
